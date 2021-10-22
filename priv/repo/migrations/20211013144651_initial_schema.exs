@@ -9,11 +9,4 @@ defmodule Budgetalx.Repo.Migrations.InitialSchema do
   def down do
     exec_file("initial_schema_down.sql")
   end
-
-  def exec_file(file) do
-    "priv/repo/migrations"
-    |> Path.join(file)
-    |> File.read!()
-    |> execute_sql()
-  end
 end

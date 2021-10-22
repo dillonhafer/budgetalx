@@ -61,6 +61,7 @@ defmodule Budgetalx.MixProject do
   defp aliases do
     [
       setup: ["deps.get", "ecto.setup"],
+      m: ["migration"],
       twiki: ["ecto.migrate", "ecto.rollback", "ecto.migrate"],
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],

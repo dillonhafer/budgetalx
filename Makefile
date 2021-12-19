@@ -6,3 +6,8 @@ console:
 
 test:
 	mix test
+
+setup:
+	mix deps.get
+	mix ecto.setup
+	mix phx.server

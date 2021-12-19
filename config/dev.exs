@@ -3,7 +3,7 @@ import Config
 # Configure your database
 config :budgetalx, Budgetalx.Repo,
   database: "budgetalx_dev",
-  socket_dir: "/var/run/postgresql",
+  host: "localhost",
   show_sensitive_data_on_connection_error: true,
   parameters: [application_name: "BudgetalX", statement_timeout: "5000"],
   plan_cache_mode: "force_custom_plan",

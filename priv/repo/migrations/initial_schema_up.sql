@@ -24,8 +24,8 @@ CREATE TABLE public.allocation_plan_budget_items (
     allocation_plan_id integer NOT NULL,
     budget_item_id integer NOT NULL,
     amount_budgeted numeric(10,2) NOT NULL,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    created_at timestamptz NOT NULL,
+    updated_at timestamptz NOT NULL
 );
 
 
@@ -49,8 +49,8 @@ CREATE TABLE public.allocation_plans (
     start_date date NOT NULL,
     end_date date NOT NULL,
     income numeric(10,2) NOT NULL,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    created_at timestamptz NOT NULL,
+    updated_at timestamptz NOT NULL
 );
 
 
@@ -71,12 +71,12 @@ ALTER SEQUENCE public.allocation_plans_id_seq OWNED BY public.allocation_plans.i
 CREATE TABLE public.annual_budget_items (
     id integer NOT NULL,
     annual_budget_id integer NOT NULL,
-    name character varying(255) NOT NULL,
+    name text NOT NULL,
     due_date date NOT NULL,
     amount numeric(10,2) NOT NULL,
     paid boolean DEFAULT false NOT NULL,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
+    created_at timestamptz NOT NULL,
+    updated_at timestamptz NOT NULL,
     payment_intervals integer DEFAULT 12 NOT NULL
 );
 
@@ -99,8 +99,8 @@ CREATE TABLE public.annual_budgets (
     id integer NOT NULL,
     user_id integer NOT NULL,
     year integer NOT NULL,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
+    created_at timestamptz NOT NULL,
+    updated_at timestamptz NOT NULL,
     CONSTRAINT year_range CHECK (((year >= 2013) AND (year <= 2100)))
 );
 
@@ -126,8 +126,8 @@ CREATE TABLE public.assets_liabilities (
     user_id integer NOT NULL,
     name public.citext NOT NULL,
     is_asset boolean DEFAULT true NOT NULL,
-    created_at timestamp with time zone DEFAULT now() NOT NULL,
-    updated_at timestamp with time zone DEFAULT now() NOT NULL
+    created_at timestamptz DEFAULT now() NOT NULL,
+    updated_at timestamptz DEFAULT now() NOT NULL
 );
 
 
@@ -149,10 +149,10 @@ ALTER SEQUENCE public.assets_liabilities_id_seq OWNED BY public.assets_liabiliti
 CREATE TABLE public.budget_categories (
     id integer NOT NULL,
     budget_id integer NOT NULL,
-    name character varying(255) NOT NULL,
-    percentage character varying(255) NOT NULL,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    name text NOT NULL,
+    percentage text NOT NULL,
+    created_at timestamptz NOT NULL,
+    updated_at timestamptz NOT NULL
 );
 
 
@@ -173,11 +173,11 @@ ALTER SEQUENCE public.budget_categories_id_seq OWNED BY public.budget_categories
 CREATE TABLE public.budget_item_expenses (
     id integer NOT NULL,
     budget_item_id integer NOT NULL,
-    name character varying(255) NOT NULL,
+    name text NOT NULL,
     amount numeric(10,2) NOT NULL,
     date date NOT NULL,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    created_at timestamptz NOT NULL,
+    updated_at timestamptz NOT NULL
 );
 
 
@@ -198,10 +198,10 @@ ALTER SEQUENCE public.budget_item_expenses_id_seq OWNED BY public.budget_item_ex
 CREATE TABLE public.budget_items (
     id integer NOT NULL,
     budget_category_id integer NOT NULL,
-    name character varying(255) NOT NULL,
+    name text NOT NULL,
     amount_budgeted numeric(10,2) NOT NULL,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
+    created_at timestamptz NOT NULL,
+    updated_at timestamptz NOT NULL,
     envelope boolean
 );
 
@@ -224,8 +224,8 @@ CREATE TABLE public.budgets (
     id integer NOT NULL,
     month integer NOT NULL,
     monthly_income numeric(10,2) NOT NULL,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
+    created_at timestamptz NOT NULL,
+    updated_at timestamptz NOT NULL,
     user_id integer NOT NULL,
     year integer NOT NULL,
     CONSTRAINT verify_month CHECK (((month >= 1) AND (month <= 12))),
@@ -252,8 +252,8 @@ CREATE TABLE public.net_worth_items (
     net_worth_id integer NOT NULL,
     asset_liability_id integer NOT NULL,
     amount numeric(10,2) NOT NULL,
-    created_at timestamp with time zone DEFAULT now() NOT NULL,
-    updated_at timestamp with time zone DEFAULT now() NOT NULL
+    created_at timestamptz DEFAULT now() NOT NULL,
+    updated_at timestamptz DEFAULT now() NOT NULL
 );
 
 
@@ -277,8 +277,8 @@ CREATE TABLE public.net_worths (
     user_id integer NOT NULL,
     year integer NOT NULL,
     month integer NOT NULL,
-    created_at timestamp with time zone DEFAULT now() NOT NULL,
-    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    created_at timestamptz DEFAULT now() NOT NULL,
+    updated_at timestamptz DEFAULT now() NOT NULL,
     CONSTRAINT month_range CHECK (((month >= 1) AND (month <= 12))),
     CONSTRAINT year_range CHECK (((year >= 1900) AND (year <= 2100)))
 );
@@ -299,37 +299,38 @@ CREATE TABLE public.sessions (
     user_id integer NOT NULL,
     ip character varying NOT NULL,
     user_agent character varying NOT NULL,
-    expired_at timestamp with time zone,
-    created_at timestamp with time zone DEFAULT now() NOT NULL,
-    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    expired_at timestamptz ,
+    created_at timestamptz DEFAULT now() NOT NULL,
+    updated_at timestamptz DEFAULT now() NOT NULL,
     device_name text,
     push_notification_token text
 );
 CREATE TABLE public.users (
     id integer NOT NULL,
-    password_hash character varying(255),
-    password_salt character varying(255),
+    password_hash text,
+    password_salt text,
     admin boolean,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
-    password_reset_token character varying(255),
-    password_reset_sent_at timestamp without time zone,
-    email character varying(255) DEFAULT ''::character varying NOT NULL,
-    encrypted_password character varying(255) DEFAULT ''::character varying NOT NULL,
-    first_name character varying(255),
-    last_name character varying(255),
-    reset_password_token character varying(255),
-    reset_password_sent_at timestamp without time zone,
-    remember_created_at timestamp without time zone,
+    created_at timestamptz NOT NULL,
+    updated_at timestamptz NOT NULL,
+    password_reset_token text,
+    password_reset_sent_at timestamptz,
+    email citext NOT NULL unique,
+    hashed_password text NOT NULL,
+    confirmed_at timestamptz,
+    first_name text,
+    last_name text,
+    reset_password_token text,
+    reset_password_sent_at timestamptz,
+    remember_created_at timestamptz,
     sign_in_count integer DEFAULT 0 NOT NULL,
-    current_sign_in_at timestamp without time zone,
-    last_sign_in_at timestamp without time zone,
-    current_sign_in_ip character varying(255),
-    last_sign_in_ip character varying(255),
+    current_sign_in_at timestamptz,
+    last_sign_in_at timestamptz,
+    current_sign_in_ip text,
+    last_sign_in_ip text,
     avatar_file_name character varying,
     avatar_content_type character varying,
     avatar_file_size integer,
-    avatar_updated_at timestamp without time zone
+    avatar_updated_at timestamptz
 );
 
 CREATE SEQUENCE public.users_id_seq
@@ -513,7 +514,6 @@ CREATE INDEX sessions_user_id_idx ON public.sessions USING btree (user_id);
 
 
 
-CREATE UNIQUE INDEX users_lower_idx ON public.users USING btree (lower((email)::text));
 
 ALTER TABLE ONLY public.allocation_plans
     ADD CONSTRAINT allocation_budget_foreign_key FOREIGN KEY (budget_id) REFERENCES public.budgets(id);
